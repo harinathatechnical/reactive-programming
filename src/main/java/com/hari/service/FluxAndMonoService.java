@@ -8,11 +8,11 @@ import java.util.List;
 public class FluxAndMonoService {
 
     public Flux<String> fruitsFlux(){
-        return Flux.fromIterable(List.of("Mango","Apple"));
+        return Flux.fromIterable(List.of("Mango","Apple")).log();
     }
 
     public Mono<String> fruitsMono(){
-        return Mono.just("Apple");
+        return Mono.just("Apple").log();
     }
 
     public static void main(String[] args) {
