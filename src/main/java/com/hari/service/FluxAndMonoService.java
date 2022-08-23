@@ -177,6 +177,54 @@ public class FluxAndMonoService {
         return Mono.just("Apple").log();
     }
 
+    public Flux<String> fruitsFluxFilterDoOn(int i){
+        return Flux.fromIterable(List.of("Mango","Banana"))
+                .filter(s -> s.length()>i)
+                .doOnNext(s -> {
+                    System.out.println("s= "+s);
+                })
+                .doOnSubscribe(subscription -> {
+                    System.out.println("subscription = "+subscription);
+                })
+                .doOnComplete(()-> System.out.println("Completed"));
+    }
+
+    public Flux<String> fruitsFluxOnErrorReturn(){
+        return Flux.just("Apple","Mango")
+                .concatWith(Flux.error(new RuntimeException("Exception")))
+                .onErrorReturn("Orange");
+    }
+
+    public Flux<String> fruitsFluxOnErrorContinue(){
+        return Flux.just("Apple","Mango","Orange")
+                .map(s -> {
+                    if(s.equalsIgnoreCase("Mango")){
+                        throw new RuntimeException("Exception");
+                    }
+                    else return s.toUpperCase();
+
+                })
+                .onErrorContinue((e,f)->{
+                    System.out.println("e= "+e);
+                    System.out.println("f= "+f);
+                });
+    }
+
+    public Flux<String> fruitsFluxOnErrorMap(){
+        return Flux.just("Apple","Mango","Orange")
+                .map(s -> {
+                    if(s.equalsIgnoreCase("Mango")){
+                        throw new RuntimeException("Exception");
+                    }
+                    else return s.toUpperCase();
+
+                })
+                .onErrorMap(throwable -> {
+                    System.out.println("throwable = "+throwable);
+                    return new IllegalStateException("From Error Map");
+                });
+    }
+
     public static void main(String[] args) {
         FluxAndMonoService obj = new FluxAndMonoService();
         obj.fruitsFlux().subscribe(System.out::println);
