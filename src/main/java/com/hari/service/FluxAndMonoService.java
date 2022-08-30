@@ -24,7 +24,7 @@ public class FluxAndMonoService {
 
     public Flux<String> fruitsFluxFilter(int i){
         return Flux.fromIterable(List.of("Mango","Banana"))
-                .filter(s -> s.length()>i);
+                .filter(s -> s.length()>i).log();
     }
 
     public Flux<String> fruitsFluxFilterMap(int i){
